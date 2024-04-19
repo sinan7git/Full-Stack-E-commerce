@@ -1,8 +1,9 @@
 from rest_framework.decorators import api_view,permission_classes
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
-from ecommerce.models import Products,NewArrival,BestSeller,User
-from .serializers import ProductsSerializer,ProductDetailSerializer,NewArrivalSerializer,BestSellerSerializer,CartSerializer
+from ecommerce.models import Products,NewArrival,BestSeller,User,Order,OrderItem
+from .serializers import ProductsSerializer,ProductDetailSerializer,NewArrivalSerializer,BestSellerSerializer,CartSerializer,OrderSerializer
 import requests
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated,DjangoModelPermissions
@@ -166,3 +167,25 @@ def add_products(request):
         return Response(serializer.errors, status=400)
     else:
         return Response({"message": "Permission denied"}, status=403)
+
+
+@api_view(["GET"])
+def order_list(request):
+    if request.user.is_authenticated and request.user.has_perm('ecommerce.can_manage_orders'):
+        orders = Order.objects.all()
+        serializer = OrderSerializer(orders, many=True)
+        content = JSONRenderer().render(serializer.data)  # Render the serializer data
+        return Response(content, content_type='application/json')  # Use DRF Response
+    else:
+        return Response({'error': 'You do not have permission to perform this action'}, status=403)
+
+# Retrieve order detail (for admins only)
+
+
+def order_detail(request, order_id):
+    if request.user.is_authenticated and request.user.has_perm('ecommerce.can_manage_orders'):
+        order = get_object_or_404(Order, pk=order_id)
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'You do not have permission to perform this action'}, status=403)

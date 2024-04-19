@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ecommerce.models import Products, NewArrival, BestSeller
+from ecommerce.models import Products, NewArrival, BestSeller, Order,OrderItem
 
 
 class ProductsSerializer(serializers.ModelSerializer):
@@ -41,4 +41,19 @@ class BestSellerSerializer(serializers.ModelSerializer):
         model = BestSeller
         fields = ("id", "image", "name", "old_price", "price")
 
-        
+
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.ReadOnlyField(source='product.name') # Get product name
+
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'product_name', 'quantity', 'price']
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'created_at', 'status', 'items']
