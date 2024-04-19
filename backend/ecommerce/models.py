@@ -14,6 +14,9 @@ class Products(models.Model):
     add_cart = models.BooleanField(default=False)
     
     class Meta:
+        permissions = (
+            ("can_manage_products", "Can add and manage products"),
+        )
         verbose_name_plural = 'products'
     
     def __str__(self):
@@ -51,7 +54,7 @@ class BestSeller(models.Model):
         return self.name
     
 
-class User(models.Model):
+class Users(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     items = models.ManyToManyField(Products)
 
@@ -60,3 +63,23 @@ class User(models.Model):
             ('can_manage_items', 'Can manage items'),
             ('can_manage_orders', 'Can manage orders'),
         )
+
+
+class Order(models.Model):
+    ORDER_STATUS = (
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=ORDER_STATUS, default='Pending')
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
