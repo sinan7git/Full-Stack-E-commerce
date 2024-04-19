@@ -1,0 +1,52 @@
+.xysa {
+    position: relative;
+  }
+  
+  .xysa-toggle-button {
+    background: none;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .xysa-Heyn {
+      display: block;
+      margin-bottom: -89px;
+    }
+  
+    .xysa-mwv {
+      margin-left: 35px;
+    }
+  }
+  
+
+.xysa-dropdown {
+  position: relative;
+}
+
+.xysa-dropdown span {
+  cursor: pointer;
+}
+
+.xysa-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+      font-style: italic;
+    font-weight: 600;
+  z-index: 1;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.xysa-dropdown:hover .xysa-dropdown-content {
+  display: block;
+}
+
+.xysa-dropdown-content li {
+  padding: 10px;
+}
+
